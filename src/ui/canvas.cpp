@@ -33,7 +33,7 @@ Canvas::Canvas(QWidget* parent)
     setSceneRect(-width()/2, -height()/2, width(), height());
     setRenderHints(QPainter::Antialiasing);
 
-    useGL();
+    //useGL();
     new AxesControl(this);
 }
 

@@ -28,7 +28,10 @@ DepthImageItem::DepthImageItem(QVector3D pos, QVector3D size,
 
 DepthImageItem::~DepthImageItem()
 {
-    glDeleteTextures(1, &depth_tex);
+    if (depth_tex)
+    {
+        glDeleteTextures(1, &depth_tex);
+    }
 }
 
 void DepthImageItem::initializeGL()
@@ -70,7 +73,8 @@ void DepthImageItem::initializeGL()
 
 void DepthImageItem::reposition()
 {
-    setPos(canvas->worldToScene(pos));
+    setPos(canvas->worldToScene(pos) -
+           QPointF(0, size.y() * canvas->getScale()));
     prepareGeometryChange();
 }
 
