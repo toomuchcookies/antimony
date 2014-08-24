@@ -235,6 +235,11 @@ void App::connectActions()
             this, SLOT(onExportSTL()));
     connect(window->ui->actionExportJSON, SIGNAL(triggered()),
             this, SLOT(onExportJSON()));
+
+    connect(window->ui->actionRaster, SIGNAL(triggered()),
+            window->canvas, SLOT(useRaster()));
+    connect(window->ui->actionOpenGL, SIGNAL(triggered()),
+            window->canvas, SLOT(useGL()));
 }
 
 void App::setGlobalStyle()
