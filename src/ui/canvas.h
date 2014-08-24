@@ -74,6 +74,14 @@ signals:
 public slots:
     void spinTo(float new_yaw, float new_pitch);
 
+    /** Switch to the OpenGL backend
+     */
+    void useGL();
+
+    /** Switch to the default raster backend
+     */
+    void useRaster();
+
 protected:
     /** On mouse press, save mouse down position in _click_pos.
      *

@@ -11,14 +11,19 @@
 QGLShaderProgram DepthImageItem::shader;
 QGLBuffer DepthImageItem::vertices;
 
-DepthImageItem::DepthImageItem(QVector3D pos, QVector3D size, QImage depth,
-                               Canvas* canvas)
-    : QGraphicsObject(), pos(pos), size(size), depth(depth), canvas(canvas)
+DepthImageItem::DepthImageItem(QVector3D pos, QVector3D size, bool gl,
+                               QImage depth, Canvas* canvas)
+    : QGraphicsObject(), pos(pos), size(size), use_openGL(gl),
+      depth(depth), canvas(canvas)
 {
     connect(canvas, &Canvas::viewChanged, this, &DepthImageItem::reposition);
     reposition();
+
+    if (use_openGL)
+    {
+        initializeGL();
+    }
     setZValue(-20);
-    initializeGL();
 }
 
 DepthImageItem::~DepthImageItem()
@@ -81,6 +86,8 @@ void DepthImageItem::paintGL()
     shader.bind();
     vertices.bind();
 
+    glEnable(GL_DEPTH_TEST);
+
     // Load vertices into shader
     const GLuint vp = shader.attributeLocation("vertex_position");
     glEnableVertexAttribArray(vp);
@@ -125,6 +132,8 @@ void DepthImageItem::paintGL()
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     vertices.release();
     shader.release();
+
+    glDisable(GL_DEPTH_TEST);
 }
 
 void DepthImageItem::paintRaster(QPainter* painter)
@@ -182,5 +191,12 @@ void DepthImageItem::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    paintGL();
+    if (use_openGL)
+    {
+        paintGL();
+    }
+    else
+    {
+        paintRaster(painter);
+    }
 }

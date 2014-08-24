@@ -28,15 +28,12 @@ Canvas::Canvas(QWidget* parent)
 {
     setScene(scene);
     setStyleSheet("QGraphicsView { border-style: none; }");
+    setBackgroundBrush(QBrush(Qt::black));
 
     setSceneRect(-width()/2, -height()/2, width(), height());
     setRenderHints(QPainter::Antialiasing);
 
-    QGLFormat format;
-    format.setVersion(2, 1);
-    format.setSampleBuffers(true);
-    setViewport(new QGLWidget(format, this));
-
+    useGL();
     new AxesControl(this);
 }
 
@@ -172,6 +169,19 @@ void Canvas::spinTo(float new_yaw, float new_pitch)
     b->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
+void Canvas::useGL()
+{
+    QGLFormat format;
+    format.setVersion(2, 1);
+    format.setSampleBuffers(true);
+    setViewport(new QGLWidget(format, this));
+}
+
+void Canvas::useRaster()
+{
+    setViewport(NULL);
+}
+
 void Canvas::mousePressEvent(QMouseEvent *event)
 {
     QGraphicsView::mousePressEvent(event);
@@ -278,10 +288,17 @@ void Canvas::pan(QPointF d)
 
 void Canvas::drawBackground(QPainter* painter, const QRectF& rect)
 {
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (dynamic_cast<QGLWidget*>(viewport()))
+    {
+        Q_UNUSED(painter);
+        Q_UNUSED(rect);
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    else
+    {
+        QGraphicsView::drawBackground(painter, rect);
+    }
 }
 
 void Canvas::paintEvent(QPaintEvent *event)
