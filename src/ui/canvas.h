@@ -58,8 +58,6 @@ public:
      */
     float getZmax() const;
 
-    QGraphicsScene* scene;
-
     /** Get yaw (in radians)
      */
     float getYaw() const { return yaw; }
@@ -67,6 +65,13 @@ public:
     /** Get pitch (in radians)
      */
     float getPitch() const { return pitch; }
+
+    /** Returns True if we're using the OpenGL backend,
+     *  false otherwise.
+     */
+    bool usingGL() const;
+
+    QGraphicsScene* scene;
 
 signals:
     void viewChanged();

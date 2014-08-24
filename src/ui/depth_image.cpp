@@ -11,15 +11,15 @@
 QGLShaderProgram DepthImageItem::shader;
 QGLBuffer DepthImageItem::vertices;
 
-DepthImageItem::DepthImageItem(QVector3D pos, QVector3D size, bool gl,
+DepthImageItem::DepthImageItem(QVector3D pos, QVector3D size,
                                QImage depth, Canvas* canvas)
-    : QGraphicsObject(), pos(pos), size(size), use_openGL(gl),
-      depth(depth), canvas(canvas)
+    : QGraphicsObject(), pos(pos), size(size),
+      depth(depth), canvas(canvas), depth_tex(0)
 {
     connect(canvas, &Canvas::viewChanged, this, &DepthImageItem::reposition);
     reposition();
 
-    if (use_openGL)
+    if (canvas->usingGL())
     {
         initializeGL();
     }
@@ -191,7 +191,7 @@ void DepthImageItem::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if (use_openGL)
+    if (canvas->usingGL() && depth_tex)
     {
         paintGL();
     }

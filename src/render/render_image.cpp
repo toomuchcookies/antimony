@@ -103,7 +103,7 @@ void RenderImage::addToCanvas(Canvas *canvas)
             QVector3D(bounds.xmax - bounds.xmin,
                       bounds.ymax - bounds.ymin,
                       bounds.zmax - bounds.zmin),
-            true, depth, canvas);
+            depth, canvas);
     canvas->scene->addItem(pix);
     pixmaps[canvas] = pix;
 }

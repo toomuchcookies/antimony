@@ -125,6 +125,11 @@ NodeInspector* Canvas::getInspectorAt(QPointF pos) const
     return NULL;
 }
 
+bool Canvas::usingGL() const
+{
+    return dynamic_cast<QGLWidget*>(viewport());
+}
+
 float Canvas::getZmax() const
 {
     float zmax = -INFINITY;

@@ -14,7 +14,7 @@ class DepthImageItem : public QGraphicsObject, protected QGLFunctions
 {
     Q_OBJECT
 public:
-    DepthImageItem(QVector3D pos, QVector3D size, bool gl,
+    DepthImageItem(QVector3D pos, QVector3D size,
                    QImage depth, Canvas* canvas);
     ~DepthImageItem();
     QRectF boundingRect() const;
@@ -39,8 +39,6 @@ protected:
     /** Paints the quad using the default raster engine.
      */
     void paintRaster(QPainter* painter);
-
-    bool use_openGL;
 
     QImage depth;
     Canvas* canvas;
