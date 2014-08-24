@@ -32,6 +32,14 @@ protected:
     void initializeGL();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    /** Paints the quad using OpenGL for blending.
+     */
+    void paintGL();
+
+    /** Paints the quad using the default raster engine.
+     */
+    void paintRaster(QPainter* painter);
+
     QImage depth;
     Canvas* canvas;
 

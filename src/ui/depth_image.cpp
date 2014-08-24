@@ -76,15 +76,8 @@ QRectF DepthImageItem::boundingRect() const
                   size.y() * canvas->getScale());
 }
 
-void DepthImageItem::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
+void DepthImageItem::paintGL()
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    glEnable(GL_DEPTH_TEST);
-
     shader.bind();
     vertices.bind();
 
@@ -132,11 +125,10 @@ void DepthImageItem::paint(QPainter *painter,
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     vertices.release();
     shader.release();
+}
 
-    glEnable(GL_DEPTH_TEST);
-
-    /*
-
+void DepthImageItem::paintRaster(QPainter* painter)
+{
     if (depth.height() == 0)
     {
         return;
@@ -180,5 +172,15 @@ void DepthImageItem::paint(QPainter *painter,
                    size.x() * canvas->getScale(),
                    size.y() * canvas->getScale()),
             depth_);
-    */
+
+}
+
+void DepthImageItem::paint(QPainter *painter,
+                           const QStyleOptionGraphicsItem *option,
+                           QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    paintGL();
 }
