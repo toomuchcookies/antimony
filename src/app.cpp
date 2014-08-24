@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QThread>
+#include <QActionGroup>
 
 #include <cmath>
 
@@ -235,6 +236,14 @@ void App::connectActions()
             this, SLOT(onExportSTL()));
     connect(window->ui->actionExportJSON, SIGNAL(triggered()),
             this, SLOT(onExportJSON()));
+
+    auto painter_modes = new QActionGroup(this);
+    painter_modes->addAction(window->ui->actionRaster);
+    painter_modes->addAction(window->ui->actionOpenGL);
+    painter_modes->setExclusive(true);
+
+    window->ui->actionRaster->setChecked(!window->canvas->usingGL());
+    window->ui->actionOpenGL->setChecked(window->canvas->usingGL());
 
     connect(window->ui->actionRaster, SIGNAL(triggered()),
             window->canvas, SLOT(useRaster()));
