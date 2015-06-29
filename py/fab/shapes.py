@@ -581,6 +581,10 @@ def cylinder_y(x, ymin, ymax, z, r):
       x-r, ymin, z-r, x+r, ymax,z+r)
 
 def sphere(x, y, z, r):
+    print ('-r++q%sq%sq%sf%g' % (('-Xf%g' % x) if x else 'X',
+                                  ('-Yf%g' % y) if y else 'Y',
+                                  ('-Zf%g' % z) if z else 'Z',
+                                  r))
     return Shape('-r++q%sq%sq%sf%g' % (('-Xf%g' % x) if x else 'X',
                                   ('-Yf%g' % y) if y else 'Y',
                                   ('-Zf%g' % z) if z else 'Z',

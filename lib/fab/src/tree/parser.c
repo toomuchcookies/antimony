@@ -241,6 +241,7 @@ Node* get_float(const char** const input, _Bool* const failed)
 
     if (**input == 0) {
         *failed = true;
+        printf('NULL');
         return NULL;
     }
 
@@ -253,7 +254,7 @@ Node* get_float(const char** const input, _Bool* const failed)
         if (**input == '.') {
             divider = 10;
         } else if (divider) {
-            v += (**input - '0') / divider;
+            v += (float)(**input - '0') / divider;
             divider *= 10;
         } else {
             v = v * 10 + (**input - '0');
@@ -283,6 +284,7 @@ Node* get_float(const char** const input, _Bool* const failed)
     }
 
     v = neg ? -v : v;
+    printf ("Value: %4.2f\n", v);
 
     return constant_n(v);
 }
