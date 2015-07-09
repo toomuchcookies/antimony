@@ -5,8 +5,10 @@
 #include <string>
 #include <memory>
 #include <unordered_set>
+#include <list>
 
 #include "graph/types/downstream.h"
+#include "graph/watchers.h"
 
 class Source;
 class Node;
@@ -21,9 +23,24 @@ public:
     ~Datum();
 
     void setText(std::string s);
+    std::string getText() const { return expr; }
+
+    Node* parentNode() const { return parent; }
+
+    /*
+     *  Returns a borrowed reference to the type object.
+     */
+    PyTypeObject* getType() const { return type; }
 
     bool isValid() const { return valid; }
     std::string getError() const { return error; }
+
+    std::string getName() const { return name; }
+
+    /*
+     *  Return the state (passed into callbacks)
+     */
+    DatumState getState() const;
 
     /*
      *  Returns a borrowed reference to the current value.
@@ -33,7 +50,12 @@ public:
     /*
      *  Sets the callback object.
      */
-    void setWatcher(DatumWatcher* w) { watcher = w; }
+    void installWatcher(DatumWatcher* w) { watchers.push_back(w); }
+
+    /*
+     *  Returns true unless the leading character is an OUTPUT sigil.
+     */
+    bool hasInput() const;
 
     static const char SIGIL_CONNECTION = '$';
     static const char SIGIL_OUTPUT = '#';
@@ -71,7 +93,7 @@ protected:
 
     Node* parent;
 
-    DatumWatcher* watcher;
+    std::list<DatumWatcher*> watchers;
 
     /*
      *  This set represents any source whose modification could cause

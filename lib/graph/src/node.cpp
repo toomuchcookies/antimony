@@ -7,10 +7,15 @@
 #include "graph/watchers.h"
 
 Node::Node(std::string n, Graph* root)
-    : name(n), uid(root->install(this)), script(this),
-      parent(root), watcher(NULL)
+    : name(n), uid(root->install(this)), script(this), parent(root)
 {
     // Nothing to do here
+}
+
+Node::Node(std::string n, std::string script, Graph* root)
+    : name(n), uid(root->install(this)), script(this), parent(root)
+{
+    setScript(script);
 }
 
 Node::~Node()
@@ -29,6 +34,21 @@ void Node::setScript(std::string t)
     script.trigger();
 }
 
+NodeState Node::getState() const
+{
+    return (NodeState){
+            script.script, script.error, script.output,
+            script.error_lineno, childDatums()};
+}
+
+std::list<Datum*> Node::childDatums() const
+{
+    std::list<Datum*> out;
+    for (const auto& ptr : datums)
+        out.push_back(ptr.get());
+    return out;
+}
+
 void Node::update(const std::unordered_set<Datum*>& active)
 {
     // Remove any datums that weren't marked as active and trigger
@@ -40,17 +60,11 @@ void Node::update(const std::unordered_set<Datum*>& active)
     for (auto d : inactive)
         uninstall(d);
 
-    if (watcher)
+    if (!watchers.empty())
     {
-        std::list<Datum*> ds;
-        std::for_each(datums.begin(), datums.end(),
-                      [&](const std::unique_ptr<Datum>& d)
-                      { ds.push_back(d.get()); });
-
-        watcher->trigger(
-                (NodeState){
-                    script.script, script.error,
-                    script.error_lineno, ds});
+        auto state =  getState();
+        for (auto w : watchers)
+            w->trigger(state);
     }
 }
 
